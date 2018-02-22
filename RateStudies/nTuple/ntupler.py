@@ -50,9 +50,12 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
     events = Events (fwLiteInputs)
 
     triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::MYHLT")
+    triggerBits4RAW, triggerBitLabel4RAW = Handle("edm::TriggerResults"), ("TriggerResults::HLT")
 
     events.to(0)
     for event in events: break
+
+    #Add Branches of rerun menu
     event.getByLabel(triggerBitLabel, triggerBits)
     names = event.object().triggerNames(triggerBits.product())
     triggerNames = names.triggerNames()
@@ -62,6 +65,20 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
     for trigger in triggerNames:
         triggerVars[trigger]=array( 'i', [ 0 ] )
         tree.Branch( trigger, triggerVars[trigger], trigger+'/O' )
+
+    #Add interesting brnaches from menu present in RAW
+    interestingName = ["HLTriggerFirstPath","HLT_PFHT300PT30_QuadPFJet_75_60_45_40","HLT_PFHT380_SixPFJet32_D","HLTriggerFinalPath"]
+    event.getByLabel(triggerBitLabel4RAW, triggerBits4RAW)
+    names4RAW = event.object().triggerNames(triggerBits4RAW.product())
+    triggerNames4RAW = names4RAW.triggerNames()
+    for name4RAW in triggerNames4RAW: name4RAW = name4RAW.split("_v")[0]
+    nTriggers4RAW = len(triggerNames4RAW)
+    triggerVars4RAW = {}
+    for trigger in triggerNames4RAW:
+        for TIO in interestingName:
+            if TIO in trigger:
+                triggerVars4RAW[trigger]=array( 'i', [ 0 ] )
+                tree.Branch( "RAW_"+trigger, triggerVars4RAW[trigger], "RAW_"+trigger+'/O' )
 
     nEvArray = array('i', [0])
     tree.Branch( "nEvents", nEvArray, "nEvents/I")
@@ -76,11 +93,16 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
             index = names.triggerIndex(triggerName)
             if checkTriggerIndex(triggerName,index,names.triggerNames()):
                 triggerVars[triggerName][0] = triggerBits.product().accept(index)
-                if triggerName.startswith("HLT") and not ( triggerName.startswith("NoFilter") or triggerName.endswith("FirstPath") or triggerName.endswith("FinalPath")):
-                    if triggerBits.product().accept(index):
-                        triggerspassing.append(triggerName)
             else:
                 triggerVars[triggerName][0] = 0
+
+
+        event.getByLabel(triggerBitLabel4RAW, triggerBits4RAW)
+        names = event.object().triggerNames(triggerBits4RAW.product())
+        for i, triggerName in enumerate(triggerNames4RAW):
+            index = names.triggerIndex(triggerName)
+            if checkTriggerIndex(triggerName,index,names.triggerNames()) and (triggerName in triggerVars4RAW.keys()):
+                triggerVars4RAW[triggerName][0] = triggerBits4RAW.product().accept(index)
 
                 
         if iev%100==1: print "Event: ",iev," done."
@@ -97,7 +119,7 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
 if __name__ == "__main__":
     inputfiles = ["file:/mnt/t3nfs01/data01/shome/koschwei/scratch/EphemeralHLTPhysics1_Run2017E-v1/E27D9132-B8AD-E711-867D-02163E013886.root"]
     outputfile = "tree.root"
-    maxEvents = 100
+    maxEvents = 5000
 
     launchNtuple(outputfile, inputfiles, maxEvents, True)
     

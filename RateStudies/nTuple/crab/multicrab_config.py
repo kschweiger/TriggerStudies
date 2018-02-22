@@ -4,48 +4,42 @@
 #     1st element: tuple containing primary and secondary DAS dataset name
 #     2nd element: 0 if Data, 1 if MC
 Data_RunF = [
-#    ["HLT_RateEst2018_v1",
-#     "/EphemeralHLTPhysics1/Run2017F-v1/RAW",
-#     "_EphemeralHLTPhysics1_RunF",
-#     True],
-    ["HLT_RateEst2018_v1",
+    ["HLT_RateEst2018_v2",
+     "/EphemeralHLTPhysics1/Run2017F-v1/RAW",
+     "_EphemeralHLTPhysics1_RunF",
+     True],
+    ["HLT_RateEst2018_v2",
      "/EphemeralHLTPhysics2/Run2017F-v1/RAW",
      "_EphemeralHLTPhysics2_RunF",
      True],
-    ["HLT_RateEst2018_v1",
+    ["HLT_RateEst2018_v2",
      "/EphemeralHLTPhysics3/Run2017F-v1/RAW",
      "_EphemeralHLTPhysics3_RunF",
      True],
-    ["HLT_RateEst2018_v1",
+    ["HLT_RateEst2018_v2",
      "/EphemeralHLTPhysics4/Run2017F-v1/RAW",
      "_EphemeralHLTPhysics4_RunF",
      True],
+    ["HLT_RateEst2018_v2",
+     "/EphemeralHLTPhysics5/Run2017F-v1/RAW",
+     "_EphemeralHLTPhysics5_RunF",
+     True],
+    ["HLT_RateEst2018_v2",
+     "/EphemeralHLTPhysics6/Run2017F-v1/RAW",
+     "_EphemeralHLTPhysics6_RunF",
+     True],
+    ["HLT_RateEst2018_v2",
+     "/EphemeralHLTPhysics7/Run2017F-v1/RAW",
+     "_EphemeralHLTPhysics7_RunF",
+     True],
+    ["HLT_RateEst2018_v2",
+     "/EphemeralHLTPhysics8/Run2017F-v1/RAW",
+     "_EphemeralHLTPhysics8_RunF",
+     True],
 ]
 
-Data_RunE =[
-    ["HLT_RateEst2018_v1",
-     "/EphemeralHLTPhysics1/Run2017E-v1/RAW",
-     "_EphemeralHLTPhysics1_RunE",
-     True],
-    ["HLT_RateEst2018_v1",
-     "/EphemeralHLTPhysics2/Run2017E-v1/RAW",
-     "_EphemeralHLTPhysics2_RunE",
-     True],
-    ["HLT_RateEst2018_v1",
-     "/EphemeralHLTPhysics3/Run2017E-v1/RAW",
-     "_EphemeralHLTPhysics3_RunE",
-     True],
-    ["HLT_RateEst2018_v1",
-     "/EphemeralHLTPhysics4/Run2017E-v1/RAW",
-     "_EphemeralHLTPhysics4_RunE",
-     True],
 
-
-
-    ]
-
-
-datasets = Data_RunE+Data_RunF
+datasets = Data_RunF
 prefix = ""
 
 if __name__ == '__main__':
@@ -65,6 +59,7 @@ if __name__ == '__main__':
 #        config.JobType.numCores = 4
         config.JobType.numCores = 4
         config.JobType.maxMemoryMB = 10000
+        config.JobType.maxJobRuntimeMin = 720
         config.JobType.pluginName = 'Analysis'
         config.JobType.psetName = 'crab_fake_pset.py'
         config.JobType.scriptExe = 'crab_script.sh'
@@ -81,16 +76,16 @@ if __name__ == '__main__':
         
         config.section_("Data")
         config.Data.inputDBS = 'global'
-        config.Data.splitting = 'FileBased'
-        config.Data.unitsPerJob = 12 ##FIXME: use 20
+        config.Data.splitting = 'LumiBased'
+        config.Data.unitsPerJob = 7 ##FIXME: use 20
 
         config.Data.totalUnits = -1 #10*config.Data.unitsPerJob #FIXME: use -1
         config.Data.outLFNDirBase = '/store/user/koschwei/' + name
-        #config.Data.publication = False
+        config.Data.publication = False
         #if dataset[3]:
             #config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-304120_13TeV_PromptReco_Collisions17_JSON.txt'
             #    config.Data.lumiMask = '/afs/cern.ch/work/k/koschwei/public/test/CMSSW_9_2_12_patch1/src/HLTBTagging/nTuples/PU28to63_Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
-        config.Data.lumiMask = 'json_DCSONLY.txt'
+        config.Data.lumiMask = 'json_DCS_305636_Reduced.txt'
         config.Data.inputDataset = dataset[1]
 #       config.Data.publishDataName = config.General.requestName
         config.Data.outputDatasetTag = name
