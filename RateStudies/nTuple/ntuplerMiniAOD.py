@@ -412,7 +412,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         print "|       Not the ones in the setup.                                                        |"
         print "+-----------------------------------------------------------------------------------------+"
         print""
-    runAOD = False
+    runAOD = True
     if runAOD:
         print "                             +----------------------------+"
         print "                             | IMPORTANT: Will run on AOD |"
@@ -510,7 +510,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 
     #The rest
     triggerBits, triggerBitLabel                        = Handle("edm::TriggerResults"), ("TriggerResults::MYHLT")
-
+    triggerBits4RAW, triggerBitLabel4RAW = Handle("edm::TriggerResults"), ("TriggerResults::HLT")
 
 
     if runAOD:
@@ -887,26 +887,21 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         #FillVector(offJets_source,offTightJets,30)
 
         #print "Filling calo btagging"
-        FillBtag(calobtag_source, caloJets, caloJets.csv, caloJets.rankCSV,
-                 [CSVleadingCaloJet, CSVsecondCaloJet, CSVthirdCaloJet, CSVfourthCaloJet], nCSVCalogeZero )
-        FillBtag(calodeepbtag_source, caloJets, caloJets.deepcsv, caloJets.rankDeepCSV,
-                 [DeepCSVleadingCaloJet, DeepCSVsecondCaloJet, DeepCSVthirdCaloJet, DeepCSVfourthCaloJet], nDeepCSVCalogeZero)
+        FillBtag(calobtag_source, caloJets, caloJets.csv, caloJets.rankCSV)
+        FillBtag(calodeepbtag_source, caloJets, caloJets.deepcsv, caloJets.rankDeepCSV)
         FillBtag(calodeepbtag_bb_source, caloJets, caloJets.deepcsv_bb)
         FillBtag(calodeepbtag_udsg_source, caloJets, caloJets.deepcsv_udsg)
         FillBtag(caloPUid_source, caloJets, caloJets.puId)
 
         #print "Filling pf btagging"
-        FillBtag(pfbtag_source, pfJets, pfJets.csv, pfJets.rankCSV,
-                 [CSVleadingPFJet, CSVsecondPFJet, CSVthirdPFJet, CSVfourthPFJet], nCSVPFgeZero)        
-        FillBtag(pfdeepbtag_source, pfJets, pfJets.deepcsv, pfJets.rankDeepCSV,
-                 [DeepCSVleadingPFJet, DeepCSVsecondPFJet, DeepCSVthirdPFJet, DeepCSVfourthPFJet], nDeepCSVPFgeZero)
+        FillBtag(pfbtag_source, pfJets, pfJets.csv, pfJets.rankCSV)        
+        FillBtag(pfdeepbtag_source, pfJets, pfJets.deepcsv, pfJets.rankDeepCSV)
         FillBtag(pfdeepbtag_bb_source, pfJets, pfJets.deepcsv_bb)
         FillBtag(pfdeepbtag_udsg_source, pfJets, pfJets.deepcsv_udsg)
 
 
         if runAOD:
-            FillBtag(offbtag_source, offJets, offJets.csv, offJets.rankCSV,
-                     [CSVleadingOffJet, CSVsecondOffJet, CSVthirdOffJet, CSVfourthOffJet])#, nCSVOffgeZero)
+            FillBtag(offbtag_source, offJets, offJets.csv, offJets.rankCSV)#, nCSVOffgeZero)
             FillBtag(offdeepbtag_source, offJets, offJets.deepcsv_b)#, nDeepCSVOffgeZero)
             FillBtag(offdeepbtag_bb_source, offJets, offJets.deepcsv_bb)
             FillBtag(offdeepbtag_udsg_source, offJets, offJets.deepcsv_udsg)
@@ -1075,7 +1070,8 @@ if __name__ == "__main__":
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17DRStdmix_92X_upgrade2017_GEN-SIM-RAW_LS-1803to1803-2332to2332-2870to2871.root"]
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEG_Run299368_v1_Run2017C_RAW_LS-79to90.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17DRStdmix_92X_upgrade2017_AODSIM_LS-1803to1803-2134to2134-2332to2332-2870to2871-4384to4385-6032to6033-6481to6481.root"]
-    filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_MiniAOD_300107_3E580A66-3477-E711-8027-02163E0142F6.root"]
+    #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_MiniAOD_300107_3E580A66-3477-E711-8027-02163E0142F6.root"]
+    filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_AOD_300107_240EB136-3077-E711-A764-02163E01A500.root"]
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_MiniAOD_300107_3E580A66-3477-E711-8027-02163E0142F6.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17MiniAOD__92X_upgrade2017_MINIAOD_LS-starting2183.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEG_Run299368_PromptReco-v1_Run2017C_AOD_LS-79to90-115to129.root"]
