@@ -8,7 +8,7 @@ from DataFormats.FWLite import Handle, Events
 
 from utils import deltaR,SetVariable,DummyClass,productWithCheck,checkTriggerIndex
 
-def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
+def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True, LS = None):
     t0 = time.time()
     
     print "Outputfile: {0}".format(fileOutput)
@@ -23,7 +23,11 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
         cmsswConfig = imp.load_source("cmsRunProcess",os.path.expandvars(hltdumpFile))
         cmsswConfig.process.maxEvents.input = maxEvents
         cmsswConfig.process.source.fileNames = filesInput
-
+        if LS is not None:
+            print LS
+            cmsswConfig.process.source.lumisToProcess = LS
+        else:
+            cmsswConfig.process.source.lumisToProcess = []
         configfile=dir_+"/mod_hlt_dump.py"
         f = open(configfile, 'w')
         f.write(cmsswConfig.process.dumpPython())
@@ -52,6 +56,11 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
     triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::MYHLT")
     triggerBits4RAW, triggerBitLabel4RAW = Handle("edm::TriggerResults"), ("TriggerResults::HLT")
 
+    #General event variables
+    evt                 = SetVariable(tree,'evt')
+    lumi                = SetVariable(tree,'lumi')
+    run                 = SetVariable(tree,'run')
+    
     events.to(0)
     for event in events: break
 
@@ -83,8 +92,19 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
     nEvArray = array('i', [0])
     tree.Branch( "nEvents", nEvArray, "nEvents/I")
 
+
+    crun = 0
+    cls = 0
     print "Starting event loop"
     for iev,event in enumerate(events):
+        run[0]          = event.eventAuxiliary().run()
+        lumi[0]         = event.eventAuxiliary().luminosityBlock()
+        evt[0]          = event.eventAuxiliary().event()
+        if crun != run[0] or cls != lumi[0]:
+            crun = run[0]
+            cls = lumi[0]
+            print "-------------- Processing: ",crun, cls," --------------"
+        
         nEvArray[0] = 1
         event.getByLabel(triggerBitLabel, triggerBits)
         names = event.object().triggerNames(triggerBits.product())
@@ -105,7 +125,7 @@ def launchNtuple(fileOutput,filesInput, maxEvents, preProcess = True):
                 triggerVars4RAW[triggerName][0] = triggerBits4RAW.product().accept(index)
 
                 
-        if iev%100==1: print "Event: ",iev," done."
+        if iev%1000==1: print "Event: ",iev," done."
         tree.Fill()
 
     f.Write()
@@ -121,5 +141,5 @@ if __name__ == "__main__":
     outputfile = "tree.root"
     maxEvents = 5000
 
-    launchNtuple(outputfile, inputfiles, maxEvents, True)
+    launchNtuple(outputfile, inputfiles, maxEvents, True, LS = None)
     

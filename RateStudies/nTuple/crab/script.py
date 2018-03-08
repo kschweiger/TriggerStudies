@@ -21,12 +21,14 @@ try:
     import PSet
     crabFiles=PSet.process.source.fileNames
     maxEvents=int(PSet.process.maxEvents.input.value())
+    VLuminosityBlockRange = PSet.process.source.lumisToProcess
 except:
     ##local test
     print "=================== I'm using local parameters ==================="
     import PSet_localTest as PSet
     crabFiles=PSet.process.source.fileNames
     maxEvents=int(PSet.process.maxEvents.input.value())
+    VLuminosityBlockRange = PSet.process.source.lumisToProcess
 if maxEvents<0:
     maxEvents = 1000000000
 print "crabFiles before: ",crabFiles
@@ -48,7 +50,7 @@ handle.close()
 ##replace files with crab ones
 #config.components[0].files=crabFiles
 
-launchNtuple("tree.root",crabFiles,maxEvents)
+launchNtuple("tree.root",crabFiles,maxEvents, LS = VLuminosityBlockRange)
 
 #from PhysicsTools.HeppyCore.framework.looper import Looper
 #looper = Looper( 'Output', config, nPrint = 1)

@@ -9,6 +9,15 @@ hltGetConfiguration /users/koschwei/CMSSW_10_0_2/HLT_2018Tuning \
 --prescale none --max-events 10 --output none --data > hlt.py
 ```
 
+For MC:
+```bash
+hltGetConfiguration /users/koschwei/CMSSW_10_0_2/HLT_2018Tuning \
+--setup /dev/CMSSW_10_0_0/GRun --globaltag 94X_mc2017_realistic_TSG_2017_12_19_13_49_40 \
+--input file:/mnt/t3nfs01/data01/shome/koschwei/scratch/ttH92X_RAW_LSstarting28.root \
+--process MYHLT --full --offline --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2017DtUnpacking \
+--prescale none --max-events 10 --output none --mc > hltMC.py
+```
+
 ## Running only on RAW w/ ntupler.py
 
 Run
@@ -32,6 +41,16 @@ process.hltOutputFULL = cms.OutputModule("PoolOutputModule",
 )
 process.FULLOutput = cms.EndPath(process.hltOutputFULL)
 ```
+
+Add to the `process.source` in the beginning of the file `lumisToProcess = cms.untracked.VLuminosityBlockRange( )`, so it looks like this:
+```python
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/data/Run2017C/MuonEG/RAW/v1/000/299/368/00000/00E9C4F1-E76B-E711-8952-02163E01A27B.root'),
+    lumisToProcess = cms.untracked.VLuminosityBlockRange( ),
+    inputCommands = cms.untracked.vstring('keep *')
+)
+```
+
 
 ## Running on RAW+miniAOD/AOD w/ nTuplerMiniAOD.py
 
@@ -100,3 +119,12 @@ process.hltOutputFULL = cms.OutputModule("PoolOutputModule",
 process.FULLOutput = cms.EndPath(process.hltOutputFULL)
 
 ```
+Add to the `process.source` in the beginning of the file `lumisToProcess = cms.untracked.VLuminosityBlockRange( )`, so it looks like this:
+```python
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/data/Run2017C/MuonEG/RAW/v1/000/299/368/00000/00E9C4F1-E76B-E711-8952-02163E01A27B.root'),
+    lumisToProcess = cms.untracked.VLuminosityBlockRange( ),
+    inputCommands = cms.untracked.vstring('keep *')
+)
+```
+

@@ -7,6 +7,7 @@ Code for making nTuples with offline variables (from AOD) and HLT objects (Rerun
 import ROOT
 import itertools
 import resource
+import time
 from array import array
 from math import sqrt, pi, log10, log, exp
 # load FWlite python libraries
@@ -361,7 +362,7 @@ def BookVector(tree,name="vector",listMembers=[]):
             setattr(obj,member,SetVariable(tree,name+'_'+member  ,'F',name+'_num',maxJets))
     return obj
 
-
+"""
 def getPUweight(run, truePU):
     if run not in ["RunC", "RunD", "RunE", "RunF", "RunC-F"]:
         return -1
@@ -373,7 +374,7 @@ def getPUweight(run, truePU):
         puWeights = {28 : 2.31715121903, 29 : 2.24177384225, 30 : 2.13730741994, 31 : 1.9063698654, 32 : 1.64889913161, 33 : 1.36965123988, 34 : 1.12855498097, 35 : 0.888394784789, 36 : 0.692151282263, 37 : 0.528525685644, 38 : 0.393081277971, 39 : 0.288404482963, 40 : 0.207513300002, 41 : 0.148069939956, 42 : 0.100276686747, 43 : 0.0663950149926, 44 : 0.0433624696715, 45 : 0.0272786841925, 46 : 0.0164886759071, 47 : 0.00962849744585, 48 : 0.00561461204946, 49 : 0.0031660632755, 50 : 0.00175670796918, 51 : 0.000919612858686, 52 : 0.000481644170624, 53 : 0.000247229157998, 54 : 0.000120782284412, 55 : 5.77116414773e-05, 56 : 2.67246716448e-05, 57 : 1.21300308575e-05, 58 : 5.32878267835e-06, 59 : 2.20110441649e-06, 60 : 8.91889057314e-07, 61 : 3.48689602292e-07, 62 : 1.33062097061e-07}
     if run == "RunE":
         pubins = [28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
-        puWeights = {28 : 0.996702279376, 29 : 1.02481528393, 30 : 1.08181404534, 31 : 1.11108314237, 32 : 1.14104631706, 33 : 1.14870579885, 34 : 1.16428162955, 35 : 1.14347457478, 36 : 1.128651849, 37 : 1.10914017834, 38 : 1.07806260207, 39 : 1.05015582166, 40 : 1.0213595263, 41 : 1.00637173639, 42 : 0.965094913442, 43 : 0.93054813372, 44 : 0.911157350831, 45 : 0.883919472362, 46 : 0.845033279153, 47 : 0.797091024828, 48 : 0.763257939551, 49 : 0.71540586934, 50 : 0.665655730567, 51 : 0.588341741003, 52 : 0.523327421909, 53 : 0.458988754079, 54 : 0.385837865903, 55 : 0.31994712603, 56 : 0.25984405506, 57 : 0.209515716181, 58 : 0.166026547925, 59 : 0.125922149243, 60 : 0.0955918624042, 61 : 0.071589870827, 62 : 0.0536058662532}
+        puWeights = {28 : 0.996702279376, 29 : 1.02481528393, 30 : 1.08181404534, 31 : 1.11108314237, 32 : 1.14104631706, 33 : 1.14870579885, 34 : 1.16428162955, 35 : 1.14347457478, 36 : 1.128651849, 37 : 1.10914017834, 38 : 1.07806260207, 39 : 1.05015582166, 40 : 1.0213595263, 41 : 1.00637173639, 42 : 0.965094913442, 43 : 0.93054813372, 44 : 0.911157350 831, 45 : 0.883919472362, 46 : 0.845033279153, 47 : 0.797091024828, 48 : 0.763257939551, 49 : 0.71540586934, 50 : 0.665655730567, 51 : 0.588341741003, 52 : 0.523327421909, 53 : 0.458988754079, 54 : 0.385837865903, 55 : 0.31994712603, 56 : 0.25984405506, 57 : 0.209515716181, 58 : 0.166026547925, 59 : 0.125922149243, 60 : 0.0955918624042, 61 : 0.071589870827, 62 : 0.0536058662532}
     if run == "RunF":
         pubins = [28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
         puWeights = {28 : 0.675357118717, 29 : 0.667386924221, 30 : 0.681069677516, 31 : 0.683691224579, 32 : 0.696125645994, 33 : 0.704787524526, 34 : 0.726815121595, 35 : 0.733422621595, 36 : 0.750407140941, 37 : 0.769102067347, 38 : 0.780229751969, 39 : 0.790320177585, 40 : 0.796661376052, 41 : 0.81597277936, 42 : 0.82349281328, 43 : 0.852923160221, 44 : 0.918617050258, 45 : 1.00064246458, 46 : 1.08821451505, 47 : 1.1721999352, 48 : 1.27608387402, 49 : 1.34520051682, 50 : 1.38684568839, 51 : 1.33473343967, 52 : 1.26850644352, 53 : 1.16608188205, 54 : 1.00825624492, 55 : 0.844582503817, 56 : 0.681422924113, 57 : 0.537840115808, 58 : 0.412145934425, 59 : 0.299583955995, 60 : 0.216879172082, 61 : 0.154866755476, 62 : 0.111179997118}
@@ -392,18 +393,21 @@ def getPUweight(run, truePU):
         weight = puWeights[pubins[-1]]
 
     return weight
-        
+"""     
 ##########################################################################
 
-def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProcessing=True, firstEvent=0, MC = False):
+def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProcessing=True, firstEvent=0, MC = False, LS = None):
+    import os
     bunchCrossing   = 12
+    t0 = time.time()
     print "filesInput: ",filesInput
     print "fileOutput: ",fileOutput
     print "secondaryFiles: ",secondaryFiles
     print "maxEvents: ",maxEvents
     print "preProcessing: ",preProcessing
     print "firstEvent: ",firstEvent
-    
+
+    sumDeepCSVinModules = True
     doTriggerCut = False
     if doTriggerCut:
         print "+-----------------------------------------------------------------------------------------+"
@@ -426,7 +430,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 
 
         
-    isMC = False
+    isMC = True
     Signal = False
 
     print "isMC = {0}".format(isMC)
@@ -438,8 +442,18 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         if not isMC:
             cmsRun_config = "hlt_dump_miniAOD.py"
         else:
-            print "Only Data supported!"
-            exit()
+            cmsRun_config = "hltMC_dump_miniAOD.py"
+        if LS is not None:
+            import imp
+
+            dir_ = os.getcwd()
+            cmsswConfig = imp.load_source("cmsRunProcess",os.path.expandvars(cmsRun_config))
+            cmsswConfig.process.source.lumisToProcess = LS
+            configfile=dir_+"/mod_"+cmsRun_config
+            f = open(configfile, 'w')
+            f.write(cmsswConfig.process.dumpPython())
+            f.close()
+            cmsRun_config = "mod_"+cmsRun_config
         print "Using: {0}".format(cmsRun_config)
         preprocessor = CmsswPreprocessor(cmsRun_config)
         cfg = MCComponent("OutputHLT",filesInput, secondaryfiles=secondaryFiles)
@@ -461,6 +475,10 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
             preprocessor.run(cfg,".",firstEvent,maxEvents)
             raise Exception("CMSSW preprocessor failed!")
 
+    print "Time to preprocess: {0:10f} s".format(time.time()-t0)    
+    print "Filesize of {0:8f} MB".format(os.path.getsize("cmsswPreProcessing.root") * 1e-6)
+
+        
     f = ROOT.TFile(fileOutput,"recreate")
     tree = ROOT.TTree("tree","tree")
 
@@ -576,13 +594,13 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     
     #Jets:
     l1Jets              = BookVector(tree,"l1Jets",['pt','eta','phi','energy','matchOff','matchGen'])
-    caloJets            = BookVector(tree,"caloJets",['pt','eta','phi','mass', 'energy','matchOff','matchGen','puId','csv','deepcsv','deepcsv_bb','deepcsv_udsg',"rankCSV", "rankDeepCSV", "mcFlavour"])
-    pfJets              = BookVector(tree,"pfJets",['pt','eta','phi','mass', 'energy','matchOff','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult','csv','deepcsv','deepcsv_bb','deepcsv_udsg',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankCSV", "rankDeepCSV", "mcFlavour"])
+    caloJets            = BookVector(tree,"caloJets",['pt','eta','phi','mass', 'energy','matchOff','matchGen','puId','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg',"rankCSV", "rankDeepCSV", "mcFlavour"])
+    pfJets              = BookVector(tree,"pfJets",['pt','eta','phi','mass', 'energy','matchOff','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankCSV", "rankDeepCSV", "mcFlavour"])
     offJets             = BookVector(tree,"offJets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankCSV", "rankDeepCSV", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "lepOverlap04Loose", "lepOverlap05Tight", "lepOverlap05Loose"])
     offCleanJets        = BookVector(tree,"offCleanJets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankCSV", "rankDeepCSV", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "offOrder"])
     #offClean05Jets        = BookVector(tree,"offClean05Jets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankCSV", "rankDeepCSV", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "lepOverlap04Loose", "lepOverlap05Tight", "lepOverlap05Loose", "offOrder"])
-    #offCSVJets          = BookVector(tree,"offCSVJets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankpt", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "lepOverlap04Loose", "lepOverlap05Tight", "lepOverlap05Loose"])
-    #offDeepCSVJets      = BookVector(tree,"offDeepCSVJets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankpt", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "lepOverlap04Loose", "lepOverlap05Tight", "lepOverlap05Loose"])
+    offCleanCSVJets          = BookVector(tree,"offCleanCSVJets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankpt", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "lepOverlap04Loose", "lepOverlap05Tight", "lepOverlap05Loose"])
+    offCleanDeepCSVJets      = BookVector(tree,"offCleanDeepCSVJets",['pt','eta','phi','mass', 'energy','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankpt", "matchPF", "matchCalo", "mcFlavour", "partonFlavour", "hadronFlavour", "lepOverlap04Tight", "lepOverlap04Loose", "lepOverlap05Tight", "lepOverlap05Loose"])
     #offTightJets        = BookVector(tree,"offTightJets",['pt','eta','phi','mass','csv','deepcsv','deepcsv_bb','deepcsv_b','deepcsv_udsg','matchGen','neHadEF','neEmEF','chHadEF','chEmEF','muEF','mult','neMult','chMult',"passesTightID","passesTightLeptVetoID", "passesLooseID", "rankCSV", "rankDeepCSV", "matchPF", "matchCalo", "matchGen"])
 
     #CSVleadingCaloJet = SetVariable(tree, "caloJets_ileadingCSV", "I")
@@ -708,7 +726,8 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
                 tree.Branch( "RAW_"+trigger, triggerVars4RAW[trigger], "RAW_"+trigger+'/O' )
 
 
-        
+    crun = 0
+    cls = 0
     ##event loop
     print "Starting event loop"
     for iev,event in enumerate(events):
@@ -818,6 +837,12 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         lumi[0]         = event.eventAuxiliary().luminosityBlock()
         evt[0]          = event.eventAuxiliary().event()
 
+
+        if crun != run[0] or cls != lumi[0]:
+            crun = run[0]
+            cls = lumi[0]
+            print "-------------- Processing: ",crun, cls," --------------"
+        
         #FastPrimaryVertex[0] = getVertex(FastPrimaryVertex_source)
         #FPVPixelVertices[0] = getVertex(FPVPixelVertices_source)
         #PixelVertices[0] = getVertex(PixelVertices_source)
@@ -888,14 +913,20 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 
         #print "Filling calo btagging"
         FillBtag(calobtag_source, caloJets, caloJets.csv, caloJets.rankCSV)
-        FillBtag(calodeepbtag_source, caloJets, caloJets.deepcsv, caloJets.rankDeepCSV)
+        if sumDeepCSVinModules:
+            FillBtag(calodeepbtag_source, caloJets, caloJets.deepcsv)
+        else:
+            FillBtag(calodeepbtag_source, caloJets, caloJets.deepcsv_b)
         FillBtag(calodeepbtag_bb_source, caloJets, caloJets.deepcsv_bb)
         FillBtag(calodeepbtag_udsg_source, caloJets, caloJets.deepcsv_udsg)
         FillBtag(caloPUid_source, caloJets, caloJets.puId)
 
         #print "Filling pf btagging"
-        FillBtag(pfbtag_source, pfJets, pfJets.csv, pfJets.rankCSV)        
-        FillBtag(pfdeepbtag_source, pfJets, pfJets.deepcsv, pfJets.rankDeepCSV)
+        FillBtag(pfbtag_source, pfJets, pfJets.csv, pfJets.rankCSV)
+        if sumDeepCSVinModules:
+            FillBtag(pfdeepbtag_source, pfJets, pfJets.deepcsv)
+        else:
+            FillBtag(pfdeepbtag_source, pfJets, pfJets.deepcsv_b)
         FillBtag(pfdeepbtag_bb_source, pfJets, pfJets.deepcsv_bb)
         FillBtag(pfdeepbtag_udsg_source, pfJets, pfJets.deepcsv_udsg)
 
@@ -910,6 +941,9 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 
             
         makeDeepCSVSumRanking(offJets, offJets.deepcsv, offJets.deepcsv_b, offJets.deepcsv_bb, offJets.rankDeepCSV)
+        if not sumDeepCSVinModules:
+            makeDeepCSVSumRanking(pfJets, pfJets.deepcsv, pfJets.deepcsv_b, pfJets.deepcsv_bb, pfJets.rankDeepCSV)
+            makeDeepCSVSumRanking(caloJets, caloJets.deepcsv, caloJets.deepcsv_b, caloJets.deepcsv_bb, caloJets.rankDeepCSV)
         LeptonOverlap(offJets, offTightMuons, offTightElectrons, offJets.lepOverlap04Tight)
 
         """
@@ -1031,6 +1065,9 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 
         cleanCollection(offJets, offCleanJets, "lepOverlap04Tight", 0.0, offCleanJets.offOrder, verbose = False)
         #cleanCollection(offJets, offClean05Jets, "lepOverlap05Tight", 0.0, offClean05Jets.offOrder)
+
+        sortJetCollection(offCleanJets, offCleanCSVJets, "csv", offCleanCSVJets.rankpt)
+        sortJetCollection(offCleanJets, offCleanDeepCSVJets, "deepcsv", offCleanDeepCSVJets.rankpt)
         
         if isMC:
             if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
@@ -1043,40 +1080,49 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
                     Exception("Check pileupSummaryInfos!")
                 print "I'm using bunchCrossing=",bunchCrossing
             pu[0] = pileUp_source.productWithCheck().at(bunchCrossing).getTrueNumInteractions()
+            """
             wPURunC[0] = getPUweight("RunC", pu[0])
             wPURunD[0] = getPUweight("RunD", pu[0])
             wPURunE[0] = getPUweight("RunE", pu[0])
             wPURunF[0] = getPUweight("RunF", pu[0])
             wPURunCF[0] = getPUweight("RunC-F", pu[0])
+            """
             ptHat[0]    = generator_source.product().qScale()
 
             maxPUptHat[0] = -1
             for ptHat_ in pileUp_source.productWithCheck().at(bunchCrossing).getPU_pT_hats():
                 maxPUptHat[0] = max(maxPUptHat[0],ptHat_)
                 
-        if iev%10==1: print "Event: ",iev," done."
+        if iev%1000==1: print "Event: ",iev," done."
         nPassHisto.Fill(1)
         tree.Fill()
-        
+
     f.Write()
     f.Close()
+    dir_ = os.getcwd()
+    print "Total time: {0:10f} s".format(time.time()-t0)
+    print "Filesize of {0:8f} MB".format(os.path.getsize(dir_+"/"+fileOutput) * 1e-6)
+
 
 if __name__ == "__main__":
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17MiniAOD__92X_upgrade2017_MINIAOD_LS-starting2183.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17DRStdmix_92X_upgrade2017_GEN-SIM-RAW_LS-1803to1803-2332to2332-2870to2871.root"]
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17DRStdmix_92X_upgrade2017_GEN-SIM-RAW_LS-2183to2182.root"]
-    secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_RAW_300107_348E3CF3-6974-E711-80DE-02163E01A5DC.root"]
+    #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_RAW_300107_348E3CF3-6974-E711-80DE-02163E01A5DC.root"]
+    #secondaryFiles = ["file:/mnt/t3nfs01/data01/shome/koschwei/scratch/EphemeralHLTPhysics1_RAW_Run305636_LS78-79.root"]
+    secondaryFiles = ["file:/mnt/t3nfs01/data01/shome/koschwei/scratch/ttH92X_RAW_LSstarting28.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_RAW_300107_348E3CF3-6974-E711-80DE-02163E01A5DC.root"]
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17DRStdmix_92X_upgrade2017_GEN-SIM-RAW_LS-1803to1803-2332to2332-2870to2871.root"]
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEG_Run299368_v1_Run2017C_RAW_LS-79to90.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17DRStdmix_92X_upgrade2017_AODSIM_LS-1803to1803-2134to2134-2332to2332-2870to2871-4384to4385-6032to6033-6481to6481.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_MiniAOD_300107_3E580A66-3477-E711-8027-02163E0142F6.root"]
-    filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_AOD_300107_240EB136-3077-E711-A764-02163E01A500.root"]
+    #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_AOD_300107_240EB136-3077-E711-A764-02163E01A500.root"]
+    filesInput = ["file:/mnt/t3nfs01/data01/shome/koschwei/scratch/ttH92X_AOD_LSstarting28.root"]
     #secondaryFiles = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEGRunC_MiniAOD_300107_3E580A66-3477-E711-8027-02163E0142F6.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17MiniAOD__92X_upgrade2017_MINIAOD_LS-starting2183.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEG_Run299368_PromptReco-v1_Run2017C_AOD_LS-79to90-115to129.root"]
     fileOutput = "tree_phase1.root"
     maxEvents = 100
-    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents, preProcessing=True)
+    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents, preProcessing=False)
 
     

@@ -22,6 +22,7 @@ try:
     crabFiles=PSet.process.source.fileNames
     crabSecondaryFiles=PSet.process.source.secondaryFileNames
     maxEvents=int(PSet.process.maxEvents.input.value())
+    VLuminosityBlockRange = PSet.process.source.lumisToProcess
 except:
     ##local test
     print "=================== I'm using local parameters ==================="
@@ -29,6 +30,7 @@ except:
     crabFiles=PSet.process.source.fileNames
     crabSecondaryFiles=PSet.process.source.secondaryFileNames
     maxEvents=int(PSet.process.maxEvents.input.value())
+    VLuminosityBlockRange = PSet.process.source.lumisToProcess
 if maxEvents<0:
     maxEvents = 1000000000
 print "crabFiles before: ",crabFiles
@@ -39,7 +41,7 @@ else:
     firstInput = "emptyFile"
 print "crabFiles after: ",crabFiles
 print "crabSecondaryFiles after: ",crabSecondaryFiles
-
+print "Using LumiBlockRange: ",VLuminosityBlockRange
 from fwlite_config import *
 import imp
 handle = open("fwlite_config.py", 'r')
@@ -49,7 +51,7 @@ handle.close()
 
 ##replace files with crab ones
 #config.components[0].files=crabFiles
-launchNtupleFromHLT("tree.root",crabFiles,crabSecondaryFiles,maxEvents)
+launchNtupleFromHLT("tree.root",crabFiles,crabSecondaryFiles,maxEvents, LS = VLuminosityBlockRange)
 
 
 #from PhysicsTools.HeppyCore.framework.looper import Looper

@@ -4,10 +4,11 @@ process = cms.Process("MYHLT")
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring('file:/mnt/t3nfs01/data01/shome/koschwei/scratch/EphemeralHLTPhysics1_Run2017E-v1/3A521513-B9AD-E711-9D2D-02163E019E38.root'),
+    lumisToProcess = cms.untracked.VLuminosityBlockRange( ),
     inputCommands = cms.untracked.vstring('keep *')
 )
 process.HLTConfigVersion = cms.PSet(
-    tableName = cms.string('/users/koschwei/CMSSW_10_0_2/HLT_2018Tuning/V12')
+    tableName = cms.string('/users/koschwei/CMSSW_10_0_2/HLT_2018Tuning/V16')
 )
 
 process.HLTIter0GroupedCkfTrajectoryBuilderIT = cms.PSet(
@@ -3416,9 +3417,9 @@ process.datasets = cms.PSet(
         'HLT_UncorrectedJetE30_NoBPTX_v5', 
         'HLT_UncorrectedJetE60_NoBPTX3BX_v5', 
         'HLT_UncorrectedJetE70_NoBPTX3BX_v5', 
-        'HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg_v7', 
-        'HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_Reg_v7', 
-        'HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_Reg_v7', 
+        'HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v1', 
+        'HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_v1', 
+        'HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_v1', 
         'HLT_ZeroBias_FirstBXAfterTrain_v3', 
         'HLT_ZeroBias_FirstCollisionAfterAbortGap_v5', 
         'HLT_ZeroBias_FirstCollisionInTrain_v4', 
@@ -3619,9 +3620,9 @@ process.datasets = cms.PSet(
         'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130_v6', 
         'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90_v10', 
         'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v10', 
-        'HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg_v7', 
-        'HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_Reg_v7', 
-        'HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_Reg_v7'
+        'HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v1', 
+        'HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_v1', 
+        'HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_v1'
     ),
     TestEnablesEcalHcal = cms.vstring(
         'HLT_EcalCalibration_v4', 
@@ -4557,12 +4558,13 @@ process.hltDeepBLifetimeTagInfosPF = cms.EDProducer("CandIPProducer",
 
 
 process.hltDeepCombinedSecondaryVertexBJetTagsCalo = cms.EDProducer("DeepFlavourJetTagsProducer",
-    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepCSV_PhaseI.json'),
-    checkSVForDefaults = cms.bool(True),
-    meanPadding = cms.bool(True),
+    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepFlavourNoSL.json'),
+    checkSVForDefaults = cms.bool(False),
+    meanPadding = cms.bool(False),
     src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosCalo"),
     toAdd = cms.PSet(
-        probbb = cms.string('probb')
+        probbb = cms.string('probb'),
+        probcc = cms.string('probc')
     )
 )
 
@@ -4726,12 +4728,13 @@ process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo = cms.EDProducer("TrackD
 
 
 process.hltDeepCombinedSecondaryVertexBJetTagsPF = cms.EDProducer("DeepFlavourJetTagsProducer",
-    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepCSV_PhaseI.json'),
-    checkSVForDefaults = cms.bool(True),
-    meanPadding = cms.bool(True),
+    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepFlavourNoSL.json'),
+    checkSVForDefaults = cms.bool(False),
+    meanPadding = cms.bool(False),
     src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
     toAdd = cms.PSet(
-        probbb = cms.string('probb')
+        probbb = cms.string('probb'),
+        probcc = cms.string('probc')
     )
 )
 
@@ -13242,6 +13245,30 @@ process.hltPrePFHT430SixPFJet40PFBTagCSV1p5 = cms.EDFilter("HLTPrescaler",
 )
 
 
+process.hltPrenoFilterCSVCalo = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrenoFilterCSVPF = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrenoFilterDeepCSVCalo = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrenoFilterDeepCSVPF = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
 process.hltQuadCentralJet30 = cms.EDFilter("HLT1CaloJet",
     MaxEta = cms.double(2.5),
     MaxMass = cms.double(-1.0),
@@ -15883,13 +15910,10 @@ process.HLTMuonLocalRecoSequence = cms.Sequence(process.hltMuonDTDigis+process.h
 process.HLTDoLocalHcalSequence = cms.Sequence(process.hltHcalDigis+process.hltHbhePhase1Reco+process.hltHbhereco+process.hltHfprereco+process.hltHfreco+process.hltHoreco)
 
 
-process.HLTIter1TrackAndTauJets4Iter2Sequence = cms.Sequence(process.hltIter1TrackRefsForJets4Iter2+process.hltAK4Iter1TrackJets4Iter2+process.hltIter1TrackAndTauJets4Iter2)
+process.HLTBtagDeepCSVSequencePF = cms.Sequence(process.hltVerticesPF+process.hltVerticesPFSelector+process.hltVerticesPFFilter+process.hltPFJetForBtagSelector+process.hltPFJetForBtag+process.hltDeepBLifetimeTagInfosPF+process.hltDeepInclusiveVertexFinderPF+process.hltDeepInclusiveSecondaryVerticesPF+process.hltDeepTrackVertexArbitratorPF+process.hltDeepInclusiveMergedVerticesPF+process.hltDeepSecondaryVertexTagInfosPF+process.hltDeepCombinedSecondaryVertexBJetTagsInfos+process.hltDeepCombinedSecondaryVertexBJetTagsPF)
 
 
-process.HLTBeamSpot = cms.Sequence(process.hltScalersRawToDigi+process.hltOnlineBeamSpot)
-
-
-process.HLTL2muonrecoNocandSequence = cms.Sequence(process.HLTMuonLocalRecoSequence+process.hltL2OfflineMuonSeeds+process.hltL2MuonSeeds+process.hltL2Muons)
+process.HLTEndSequence = cms.Sequence(process.hltBoolEnd)
 
 
 process.HLTAK4CaloCorrectorProducersSequence = cms.Sequence(process.hltAK4CaloFastJetCorrector+process.hltAK4CaloRelativeCorrector+process.hltAK4CaloAbsoluteCorrector+process.hltAK4CaloResidualCorrector+process.hltAK4CaloCorrector)
@@ -15898,7 +15922,7 @@ process.HLTAK4CaloCorrectorProducersSequence = cms.Sequence(process.hltAK4CaloFa
 process.HLTIterativeTrackingDoubletRecovery = cms.Sequence(process.hltDoubletRecoveryClustersRefRemoval+process.hltDoubletRecoveryMaskedMeasurementTrackerEvent+process.hltDoubletRecoveryPixelLayerPairs+process.hltDoubletRecoveryPFlowPixelTrackingRegions+process.hltDoubletRecoveryPFlowPixelClusterCheck+process.hltDoubletRecoveryPFlowPixelHitDoublets+process.hltDoubletRecoveryPFlowPixelSeeds+process.hltDoubletRecoveryPFlowCkfTrackCandidates+process.hltDoubletRecoveryPFlowCtfWithMaterialTracks+process.hltDoubletRecoveryPFlowTrackCutClassifier+process.hltDoubletRecoveryPFlowTrackSelectionHighPurity)
 
 
-process.HLTEndSequence = cms.Sequence(process.hltBoolEnd)
+process.HLTBeamSpot = cms.Sequence(process.hltScalersRawToDigi+process.hltOnlineBeamSpot)
 
 
 process.HLTIterativeTrackingIteration2 = cms.Sequence(process.hltIter2ClustersRefRemoval+process.hltIter2MaskedMeasurementTrackerEvent+process.hltIter2PixelLayerTriplets+process.hltIter2PFlowPixelTrackingRegions+process.hltIter2PFlowPixelClusterCheck+process.hltIter2PFlowPixelHitDoublets+process.hltIter2PFlowPixelHitTriplets+process.hltIter2PFlowPixelSeeds+process.hltIter2PFlowCkfTrackCandidates+process.hltIter2PFlowCtfWithMaterialTracks+process.hltIter2PFlowTrackCutClassifier+process.hltIter2PFlowTrackSelectionHighPurity)
@@ -15916,10 +15940,10 @@ process.HLTIterL3OImuonTkCandidateSequence = cms.Sequence(process.hltIterL3OISee
 process.HLTRecopixelvertexingSequence = cms.Sequence(process.HLTRecoPixelTracksSequence+process.hltPixelVertices+process.hltTrimmedPixelVertices)
 
 
+process.HLTL2muonrecoNocandSequence = cms.Sequence(process.HLTMuonLocalRecoSequence+process.hltL2OfflineMuonSeeds+process.hltL2MuonSeeds+process.hltL2Muons)
+
+
 process.HLTBeginSequence = cms.Sequence(process.hltTriggerType+process.HLTL1UnpackerSequence+process.HLTBeamSpot)
-
-
-process.HLTIterL3MuonRecoPixelTracksSequence = cms.Sequence(process.hltIterL3MuonPixelTracksFilter+process.hltIterL3MuonPixelTracksFitter+process.hltIterL3MuonPixelTracksTrackingRegions+process.hltIterL3MuonPixelLayerQuadruplets+process.hltIterL3MuonPixelTracksHitDoublets+process.hltIterL3MuonPixelTracksHitQuadruplets+process.hltIterL3MuonPixelTracks)
 
 
 process.HLTRecoPixelTracksSequenceForIterL3FromL1Muon = cms.Sequence(process.hltIterL3FromL1MuonPixelTracksTrackingRegions+process.hltIterL3FromL1MuonPixelLayerQuadruplets+process.hltIterL3FromL1MuonPixelTracksHitDoublets+process.hltIterL3FromL1MuonPixelTracksHitQuadruplets+process.hltIterL3FromL1MuonPixelTracks)
@@ -15929,6 +15953,9 @@ process.HLTPreshowerSequence = cms.Sequence(process.hltEcalPreshowerDigis+proces
 
 
 process.HLTDoLocalPixelSequenceRegForBTag = cms.Sequence(process.hltSelectorJets20L1FastJet+process.hltSelectorCentralJets20L1FastJeta+process.hltSiPixelDigisRegForBTag+process.hltSiPixelClustersRegForBTag+process.hltSiPixelClustersRegForBTagCache+process.hltSiPixelRecHitsRegForBTag+process.hltPixelLayerQuadrupletsRegForBTag)
+
+
+process.HLTIterL3MuonRecoPixelTracksSequence = cms.Sequence(process.hltIterL3MuonPixelTracksFilter+process.hltIterL3MuonPixelTracksFitter+process.hltIterL3MuonPixelTracksTrackingRegions+process.hltIterL3MuonPixelLayerQuadruplets+process.hltIterL3MuonPixelTracksHitDoublets+process.hltIterL3MuonPixelTracksHitQuadruplets+process.hltIterL3MuonPixelTracks)
 
 
 process.HLTL2muonrecoSequence = cms.Sequence(process.HLTL2muonrecoNocandSequence+process.hltL2MuonCandidates)
@@ -15955,7 +15982,7 @@ process.HLTIterativeTrackingIteration2ForIterL3FromL1Muon = cms.Sequence(process
 process.HLTIterativeTrackingIteration2ForBTag = cms.Sequence(process.hltIter2ClustersRefRemovalForBTag+process.hltIter2MaskedMeasurementTrackerEventForBTag+process.hltIter2PixelLayerTripletsForBTag+process.hltIter2PFlowPixelTrackingRegionsForBTag+process.hltIter2PFlowPixelClusterCheckForBTag+process.hltIter2PFlowPixelHitDoubletsForBTag+process.hltIter2PFlowPixelHitTripletsForBTag+process.hltIter2PFlowPixelSeedsForBTag+process.hltIter2PFlowCkfTrackCandidatesForBTag+process.hltIter2PFlowCtfWithMaterialTracksForBTag+process.hltIter2PFlowTrackCutClassifierForBTag+process.hltIter2PFlowTrackSelectionHighPurityForBTag)
 
 
-process.HLTBtagDeepCSVSequencePF = cms.Sequence(process.hltVerticesPF+process.hltVerticesPFSelector+process.hltVerticesPFFilter+process.hltPFJetForBtagSelector+process.hltPFJetForBtag+process.hltDeepBLifetimeTagInfosPF+process.hltDeepInclusiveVertexFinderPF+process.hltDeepInclusiveSecondaryVerticesPF+process.hltDeepTrackVertexArbitratorPF+process.hltDeepInclusiveMergedVerticesPF+process.hltDeepSecondaryVertexTagInfosPF+process.hltDeepCombinedSecondaryVertexBJetTagsInfos+process.hltDeepCombinedSecondaryVertexBJetTagsPF)
+process.HLTIter1TrackAndTauJets4Iter2Sequence = cms.Sequence(process.hltIter1TrackRefsForJets4Iter2+process.hltAK4Iter1TrackJets4Iter2+process.hltIter1TrackAndTauJets4Iter2)
 
 
 process.HLTAK4PFCorrectorProducersSequence = cms.Sequence(process.hltAK4PFFastJetCorrector+process.hltAK4PFRelativeCorrector+process.hltAK4PFAbsoluteCorrector+process.hltAK4PFResidualCorrector+process.hltAK4PFCorrector)
@@ -15979,6 +16006,9 @@ process.HLTIterativeTrackingIter02ForBTag = cms.Sequence(process.HLTIterativeTra
 process.HLTDoLocalStripSequenceRegForBTag = cms.Sequence(process.hltSiStripExcludedFEDListProducer+process.hltSiStripRawToClustersFacility+process.hltSiStripClustersRegForBTag)
 
 
+process.HLTIterativeTrackingIter02ForIterL3Muon = cms.Sequence(process.HLTIterativeTrackingIteration0ForIterL3Muon+process.HLTIterativeTrackingIteration2ForIterL3Muon+process.hltIter2IterL3MuonMerged)
+
+
 process.HLTDoCaloSequencePF = cms.Sequence(process.HLTDoFullUnpackingEgammaEcalWithoutPreshowerSequence+process.HLTDoLocalHcalSequence+process.hltTowerMakerForAll)
 
 
@@ -15989,9 +16019,6 @@ process.HLTParticleFlowSequence = cms.Sequence(process.HLTPreshowerSequence+proc
 
 
 process.HLTIterL3MuonRecopixelvertexingSequence = cms.Sequence(process.HLTIterL3MuonRecoPixelTracksSequence+process.hltIterL3MuonPixelVertices+process.hltIterL3MuonTrimmedPixelVertices)
-
-
-process.HLTIterativeTrackingIter02ForIterL3Muon = cms.Sequence(process.HLTIterativeTrackingIteration0ForIterL3Muon+process.HLTIterativeTrackingIteration2ForIterL3Muon+process.hltIter2IterL3MuonMerged)
 
 
 process.HLTIterativeTrackingIter02ForIterL3FromL1Muon = cms.Sequence(process.HLTIterativeTrackingIteration0ForIterL3FromL1Muon+process.HLTIterativeTrackingIteration2ForIterL3FromL1Muon+process.hltIter2IterL3FromL1MuonMerged)
@@ -16049,6 +16076,18 @@ process.HLTAK4PFJetsReconstructionSequence = cms.Sequence(process.HLTL2muonrecoS
 
 
 process.HLTAK4PFJetsSequence = cms.Sequence(process.HLTPreAK4PFJetsRecoSequence+process.HLTAK4PFJetsReconstructionSequence+process.HLTAK4PFJetsCorrectionSequence)
+
+
+process.noFilter_CSVCalo = cms.Path(process.HLTBeginSequence+process.hltPrenoFilterCSVCalo+process.HLTAK4CaloJetsSequence+process.HLTBtagCSVSequenceL3+process.HLTEndSequence)
+
+
+process.noFilter_CSVPF = cms.Path(process.HLTBeginSequence+process.hltPrenoFilterCSVPF+process.HLTAK4PFJetsSequence+process.HLTBtagCSVSequencePF+process.HLTEndSequence)
+
+
+process.noFilter_DeepCSVPF = cms.Path(process.HLTBeginSequence+process.hltPrenoFilterDeepCSVPF+process.HLTAK4PFJetsSequence+process.HLTBtagDeepCSVSequencePF+process.HLTEndSequence)
+
+
+process.noFilter_DeepCSVCalo = cms.Path(process.HLTBeginSequence+process.hltPrenoFilterDeepCSVCalo+process.HLTAK4CaloJetsSequence+process.HLTBtagDeepCSVSequenceL3+process.HLTEndSequence)
 
 
 process.HLTriggerFirstPath = cms.Path(process.hltGetConditions+process.hltGetRaw+process.hltBoolFalse)
@@ -16178,6 +16217,8 @@ process.HLT_PFHT350PT30_QuadPFJet_75_60_45_40_v7 = cms.Path(process.HLTBeginSequ
 
 
 process.HLTriggerFinalPath = cms.Path(process.hltGtStage2Digis+process.hltScalersRawToDigi+process.hltFEDSelector+process.hltTriggerSummaryAOD+process.hltTriggerSummaryRAW+process.hltBoolFalse)
+
+
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
@@ -16211,17 +16252,17 @@ process.hltOutputFULL = cms.OutputModule("PoolOutputModule",
 					'keep *SuperCluster*_*_*_*',
 					'keep *MET*_*_*_*',
 					'keep *Vertex*_*_*_*',
-                                        #######
-                                        'keep *_genParticles_*_*',#AOD
-                                        'keep *_prunedGenParticles_*_*',#MINIAOD
-                                        #######
-                                        'keep *genParticles_*_*_*',
-                                        'keep *Trigger*_*_*_*',
-                                        'keep recoJetedmRefToBaseProdTofloatsAssociationVector_*_*_*',
-                                        #######
-                                        'keep *_addPileupInfo_*_*', #AOD
-                                        'keep *_slimmedAddPileupInfo_*_*',#MINIAOD
-                                        #######
+					#######
+					'keep *_genParticles_*_*',#AOD
+					'keep *_prunedGenParticles_*_*',#MINIAOD
+					#######
+					'keep *genParticles_*_*_*',
+					'keep *Trigger*_*_*_*',
+					'keep recoJetedmRefToBaseProdTofloatsAssociationVector_*_*_*',
+					#######
+					'keep *_addPileupInfo_*_*', #AOD
+					'keep *_slimmedAddPileupInfo_*_*',#MINIAOD
+					#######
 					'drop *_*Digis*_*_*',
 					'drop triggerTriggerEvent_*_*_*',
 					'keep edmTriggerResults*_*_*_*',
@@ -16229,8 +16270,6 @@ process.hltOutputFULL = cms.OutputModule("PoolOutputModule",
 					'keep *_generator_*_*')
 )
 process.FULLOutput = cms.EndPath(process.hltOutputFULL)
-
-
 
 
 

@@ -11,11 +11,12 @@ process = cms.Process("FAKE")
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("file:/mnt/t3nfs01/data01/shome/koschwei/scratch/EphemeralHLTPhysics1_Run2017E-v1/E27D9132-B8AD-E711-867D-02163E013886.root"),
+                            lumisToProcess = cms.untracked.VLuminosityBlockRange(),
 )
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(4000)
+    input = cms.untracked.int32(100)
 )
 
 process.options = cms.PSet(

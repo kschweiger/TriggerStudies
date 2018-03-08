@@ -4,43 +4,43 @@
 #     1st element: tuple containing primary and secondary DAS dataset name
 #     2nd element: 0 if Data, 1 if MC
 Data_RunF = [
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics1/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics1_RunF",
+     "_1_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics2/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics2_RunF",
+     "_2_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics3/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics3_RunF",
+     "_3_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics4/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics4_RunF",
+     "_4_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics5/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics5_RunF",
+     "_5_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics6/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics6_RunF",
+     "_6_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics7/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics7_RunF",
+     "_7_RunF",
      True],
-    ["HLT_RateEst2018_v2",
+    ["HLT_RateEst2018_RAW_v1",
      "/EphemeralHLTPhysics8/Run2017F-v1/RAW",
-     "_EphemeralHLTPhysics8_RunF",
+     "_8_RunF",
      True],
 ]
 
 
 datasets = Data_RunF
-prefix = ""
+prefix = "_phase0"
 
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
@@ -76,8 +76,8 @@ if __name__ == '__main__':
         
         config.section_("Data")
         config.Data.inputDBS = 'global'
-        config.Data.splitting = 'LumiBased'
-        config.Data.unitsPerJob = 7 ##FIXME: use 20
+        config.Data.splitting = 'FileBased'
+        config.Data.unitsPerJob = 5 ##FIXME: use 20
 
         config.Data.totalUnits = -1 #10*config.Data.unitsPerJob #FIXME: use -1
         config.Data.outLFNDirBase = '/store/user/koschwei/' + name
