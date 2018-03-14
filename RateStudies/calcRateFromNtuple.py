@@ -3,14 +3,16 @@ import countEvents
 from math import sqrt
 #################################
 # User input
-basepath = "/mnt/t3nfs01/data01/shome/koschwei/scratch/HLT2018Tuning/RateEstimation/RunF/"
-inputfiles = ["EphemeralHLTPhysics1/EphemeralHLTPhysics1.root",
-              "EphemeralHLTPhysics2/EphemeralHLTPhysics2.root",
-              "EphemeralHLTPhysics3/EphemeralHLTPhysics3.root",
-              "EphemeralHLTPhysics4/EphemeralHLTPhysics4.root",
-              "EphemeralHLTPhysics5/EphemeralHLTPhysics5.root",
-              "EphemeralHLTPhysics6/EphemeralHLTPhysics6.root",
-              "EphemeralHLTPhysics7/EphemeralHLTPhysics7.root",
+basepath = "/mnt/t3nfs01/data01/shome/koschwei/scratch/HLT2018Tuning/RateEstimation/RunF270218/AllTestConfigs/"
+inputfiles = [
+    "EphemeralHLTPhysics1/EphemeralHLTPhysics1.root",
+    "EphemeralHLTPhysics2/EphemeralHLTPhysics2.root",
+    "EphemeralHLTPhysics3/EphemeralHLTPhysics3.root",
+    "EphemeralHLTPhysics4/EphemeralHLTPhysics4.root",
+    "EphemeralHLTPhysics5/EphemeralHLTPhysics5.root",
+    "EphemeralHLTPhysics6/EphemeralHLTPhysics6.root",
+    "EphemeralHLTPhysics7/EphemeralHLTPhysics7.root",
+    "EphemeralHLTPhysics8/EphemeralHLTPhysics8.root",
 ]
               
 nLS = 248
@@ -26,6 +28,51 @@ ROOT.gStyle.SetOptStat(0)
 print avLumi
 
 TLS = 23.31 #seconds
+
+addCombinations = [
+    ("SixJets",["HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+    ("SixJets2Tag",["HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6"]),
+
+    ("QuadJetHT30CSV3p0OrSixJets",["HLT_PFHT300PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v7",
+                                   "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                                   "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                                   "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+    
+    ("QuadJetHT350CSV3p0OrSixJets",["HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v1",
+                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                                    "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+
+    ("QuadJetHT320CSV3p0OrSixJets",["HLT_PFHT320PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v1",
+                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                                    "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+
+    ("QuadJetHT330CSV3p25rSixJets",["HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p25_v1",
+                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                                    "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+
+    ("QuadJetHT350DeepCSV3p00rSixJets",["HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1",
+                                        "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                                        "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                                        "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+
+    ("QuadJetHT350CSVorDeepCSV3p00rSixJets",["HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v1",
+                                             "HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1",
+                                             "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
+                                             "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6",
+                                             "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
+#    ("",""),
+#    ("",""),
+#    ("",""),
+#    ("",""),
+#    ("",""),
+]
+
 
 results = {}
 
@@ -78,10 +125,31 @@ for ifile, _file in enumerate(inputfiles):
     pathpair = []
     for ipath,path in enumerate(PathsinFile):
         for path2 in PathsinFile:
-            if path != path2 and (path[-10:] == path2[-10:]):
+            if path != path2 and (path[-10:] == path2[-10:]) and  (path[0:10] == path2[0:10]):
                 pathpair.append((path, path2))
                 PathsinFile.remove(path)
 
+    for name, path in addCombinations:
+        pathsel = "("
+        for p in path:
+            pathsel += "{0} > 0 || ".format(p)
+        pathsel = pathsel[:-3]+")"
+
+        nPassed = tree.Draw("", pathsel)
+        nPassedErr = sqrt(nPassed)
+        rate = lumiSF * PS * (float(nPassed) / (nLS *TLS) )
+        rateErr = lumiSF * PS * (float(nPassedErr) / (nLS *TLS) )
+        if ifile == 0:
+            nPasseds[name] = [nPassed]
+            nPassedsErr[name] = [nPassedErr]
+            rates[name] = [rate]
+            ratesErr[name] = [rateErr]
+            orderedpaths.append(name)
+        else:
+            nPasseds[name].append(nPassed)
+            nPassedsErr[name].append(nPassedErr)
+            rates[name].append(rate)
+            ratesErr[name].append(rateErr)
 
     for path1, path2 in pathpair:
         
@@ -113,4 +181,4 @@ for key in orderedpaths:
         error += ratesErr[key][ival]*ratesErr[key][ival]
     mean = mean/len(rates[key])
     error = (1.0/len(rates[key])) * sqrt(error)
-    print "Path: {0:>70} -> Mean rate {1:05.2f} +- {2:04.2f}".format(key, mean, error)
+    print "Path: {0:>130} -> Mean rate {1:05.2f} +- {2:04.2f}".format(key, mean, error)
