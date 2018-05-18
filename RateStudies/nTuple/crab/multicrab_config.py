@@ -4,35 +4,35 @@
 #     1st element: tuple containing primary and secondary DAS dataset name
 #     2nd element: 0 if Data, 1 if MC
 Data_RunF = [
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics1/Run2017F-v1/RAW",
      "_1_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics2/Run2017F-v1/RAW",
      "_2_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics3/Run2017F-v1/RAW",
      "_3_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics4/Run2017F-v1/RAW",
      "_4_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics5/Run2017F-v1/RAW",
      "_5_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics6/Run2017F-v1/RAW",
      "_6_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics7/Run2017F-v1/RAW",
      "_7_RunF",
      True],
-    ["HLT_RateEst2018_RAW_v1",
+    ["HLT_RateEst2018_RAW_v2",
      "/EphemeralHLTPhysics8/Run2017F-v1/RAW",
      "_8_RunF",
      True],
@@ -40,7 +40,7 @@ Data_RunF = [
 
 
 datasets = Data_RunF
-prefix = "_phase0"
+prefix = "_phase1"
 
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand

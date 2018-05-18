@@ -8,7 +8,7 @@ process.source = cms.Source("PoolSource",
     inputCommands = cms.untracked.vstring('keep *')
 )
 process.HLTConfigVersion = cms.PSet(
-    tableName = cms.string('/users/koschwei/CMSSW_10_0_2/HLT_2018Tuning/V16')
+    tableName = cms.string('/users/koschwei/CMSSW_10_0_3/HLT_2018Tuning_noFilter/V3')
 )
 
 process.HLTIter0GroupedCkfTrajectoryBuilderIT = cms.PSet(
@@ -3417,9 +3417,6 @@ process.datasets = cms.PSet(
         'HLT_UncorrectedJetE30_NoBPTX_v5', 
         'HLT_UncorrectedJetE60_NoBPTX3BX_v5', 
         'HLT_UncorrectedJetE70_NoBPTX3BX_v5', 
-        'HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v1', 
-        'HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_v1', 
-        'HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_v1', 
         'HLT_ZeroBias_FirstBXAfterTrain_v3', 
         'HLT_ZeroBias_FirstCollisionAfterAbortGap_v5', 
         'HLT_ZeroBias_FirstCollisionInTrain_v4', 
@@ -3619,10 +3616,7 @@ process.datasets = cms.PSet(
         'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET120_v6', 
         'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET130_v6', 
         'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90_v10', 
-        'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v10', 
-        'HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v1', 
-        'HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_v1', 
-        'HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_v1'
+        'HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_v10'
     ),
     TestEnablesEcalHcal = cms.vstring(
         'HLT_EcalCalibration_v4', 
@@ -4558,13 +4552,12 @@ process.hltDeepBLifetimeTagInfosPF = cms.EDProducer("CandIPProducer",
 
 
 process.hltDeepCombinedSecondaryVertexBJetTagsCalo = cms.EDProducer("DeepFlavourJetTagsProducer",
-    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepFlavourNoSL.json'),
-    checkSVForDefaults = cms.bool(False),
-    meanPadding = cms.bool(False),
+    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepCSV_PhaseI.json'),
+    checkSVForDefaults = cms.bool(True),
+    meanPadding = cms.bool(True),
     src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosCalo"),
     toAdd = cms.PSet(
-        probbb = cms.string('probb'),
-        probcc = cms.string('probc')
+        probbb = cms.string('probb')
     )
 )
 
@@ -4728,13 +4721,12 @@ process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo = cms.EDProducer("TrackD
 
 
 process.hltDeepCombinedSecondaryVertexBJetTagsPF = cms.EDProducer("DeepFlavourJetTagsProducer",
-    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepFlavourNoSL.json'),
-    checkSVForDefaults = cms.bool(False),
-    meanPadding = cms.bool(False),
+    NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepCSV_PhaseI.json'),
+    checkSVForDefaults = cms.bool(True),
+    meanPadding = cms.bool(True),
     src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
     toAdd = cms.PSet(
-        probbb = cms.string('probb'),
-        probcc = cms.string('probc')
+        probbb = cms.string('probb')
     )
 )
 
@@ -4829,14 +4821,14 @@ process.hltDeepSecondaryVertexTagInfosPF = cms.EDProducer("CandSecondaryVertexPr
     usePVError = cms.bool(True),
     vertexCuts = cms.PSet(
         distSig2dMax = cms.double(99999.9),
-        distSig2dMin = cms.double(3.0),
+        distSig2dMin = cms.double(2.0),
         distSig3dMax = cms.double(99999.9),
         distSig3dMin = cms.double(-99999.9),
         distVal2dMax = cms.double(2.5),
         distVal2dMin = cms.double(0.01),
         distVal3dMax = cms.double(99999.9),
         distVal3dMin = cms.double(-99999.9),
-        fracPV = cms.double(0.65),
+        fracPV = cms.double(0.79),
         massMax = cms.double(6.5),
         maxDeltaRToJetAxis = cms.double(0.4),
         minimumTrackWeight = cms.double(0.5),
@@ -12682,12 +12674,23 @@ process.hltBTagPFCSVp080Single = cms.EDFilter("HLTPFJetTag",
 )
 
 
+process.hltBTagPFDeepCSVp027Triple = cms.EDFilter("HLTPFJetTag",
+    JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPF","probb"),
+    Jets = cms.InputTag("hltPFJetForBtag"),
+    MaxTag = cms.double(999999.0),
+    MinJets = cms.int32(3),
+    MinTag = cms.double(0.27),
+    TriggerType = cms.int32(86),
+    saveTags = cms.bool(True)
+)
+
+
 process.hltBTagPFDeepCSVp035Triple = cms.EDFilter("HLTPFJetTag",
     JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPF","probb"),
     Jets = cms.InputTag("hltPFJetForBtag"),
     MaxTag = cms.double(999999.0),
     MinJets = cms.int32(3),
-    MinTag = cms.double(0.35),
+    MinTag = cms.double(0.235),
     TriggerType = cms.int32(86),
     saveTags = cms.bool(True)
 )
@@ -12698,7 +12701,7 @@ process.hltBTagPFDeepCSVp039Triple = cms.EDFilter("HLTPFJetTag",
     Jets = cms.InputTag("hltPFJetForBtag"),
     MaxTag = cms.double(999999.0),
     MinJets = cms.int32(3),
-    MinTag = cms.double(0.39),
+    MinTag = cms.double(0.26),
     TriggerType = cms.int32(86),
     saveTags = cms.bool(True)
 )
@@ -12709,7 +12712,7 @@ process.hltBTagPFDeepCSVp042Triple = cms.EDFilter("HLTPFJetTag",
     Jets = cms.InputTag("hltPFJetForBtag"),
     MaxTag = cms.double(999999.0),
     MinJets = cms.int32(3),
-    MinTag = cms.double(0.42),
+    MinTag = cms.double(0.28),
     TriggerType = cms.int32(86),
     saveTags = cms.bool(True)
 )
@@ -12720,7 +12723,7 @@ process.hltBTagPFDeepCSVp044Triple = cms.EDFilter("HLTPFJetTag",
     Jets = cms.InputTag("hltPFJetForBtag"),
     MaxTag = cms.double(999999.0),
     MinJets = cms.int32(3),
-    MinTag = cms.double(0.44),
+    MinTag = cms.double(0.2995),
     TriggerType = cms.int32(86),
     saveTags = cms.bool(True)
 )
@@ -12907,6 +12910,17 @@ process.hltPFCentralJetsLooseIDQuad30HT330 = cms.EDFilter("HLTHtMhtFilter",
     meffSlope = cms.vdouble(1.0),
     mhtLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30"),
     minHt = cms.vdouble(330.0),
+    minMeff = cms.vdouble(0.0),
+    minMht = cms.vdouble(0.0),
+    saveTags = cms.bool(True)
+)
+
+
+process.hltPFCentralJetsLooseIDQuad30HT335 = cms.EDFilter("HLTHtMhtFilter",
+    htLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30"),
+    meffSlope = cms.vdouble(1.0),
+    mhtLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30"),
+    minHt = cms.vdouble(335.0),
     minMeff = cms.vdouble(0.0),
     minMht = cms.vdouble(0.0),
     saveTags = cms.bool(True)
@@ -13107,6 +13121,12 @@ process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25 = cms.EDFilter
 )
 
 
+process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
 process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75 = cms.EDFilter("HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
     offset = cms.uint32(0)
@@ -13114,6 +13134,42 @@ process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75 = cms.EDFilter
 
 
 process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT335PT30QuadPFJet75604540 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p0 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5 = cms.EDFilter("HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
     offset = cms.uint32(0)
 )
@@ -13156,6 +13212,12 @@ process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p0 = cms.EDFilter(
 
 
 process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5 = cms.EDFilter("HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
     offset = cms.uint32(0)
 )
@@ -13210,6 +13272,12 @@ process.hltPrePFHT350PT30QuadPFJet75604540TriplePFBTagDeepCSV3p0 = cms.EDFilter(
 
 
 process.hltPrePFHT350PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25 = cms.EDFilter("HLTPrescaler",
+    L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
+    offset = cms.uint32(0)
+)
+
+
+process.hltPrePFHT350PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5 = cms.EDFilter("HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
     offset = cms.uint32(0)
 )
@@ -16171,16 +16239,37 @@ process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1 = cms.P
 process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p25_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT330+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp042Triple+process.HLTEndSequence)
 
 
+process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p5_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT330+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp027Triple+process.HLTEndSequence)
+
+
 process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p75_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT330+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp039Triple+process.HLTEndSequence)
 
 
 process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT330+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp035Triple+process.HLTEndSequence)
 
 
+process.HLT_PFHT335PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p0+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT335+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp044Triple+process.HLTEndSequence)
+
+
+process.HLT_PFHT335PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p25_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT335+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp042Triple+process.HLTEndSequence)
+
+
+process.HLT_PFHT335PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p5_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT335+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp027Triple+process.HLTEndSequence)
+
+
+process.HLT_PFHT335PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p75_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT335+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp039Triple+process.HLTEndSequence)
+
+
+process.HLT_PFHT335PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT335PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT335+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp035Triple+process.HLTEndSequence)
+
+
 process.HLT_PFHT340PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p0+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT340+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp044Triple+process.HLTEndSequence)
 
 
 process.HLT_PFHT340PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p25_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT340+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp042Triple+process.HLTEndSequence)
+
+
+process.HLT_PFHT340PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p5_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT340+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp027Triple+process.HLTEndSequence)
 
 
 process.HLT_PFHT340PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p75_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT340PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT340+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp039Triple+process.HLTEndSequence)
@@ -16193,6 +16282,9 @@ process.HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1 = cms.P
 
 
 process.HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p25_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT350PT30QuadPFJet75604540TriplePFBTagDeepCSV3p25+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT350+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp042Triple+process.HLTEndSequence)
+
+
+process.HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p5_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT350PT30QuadPFJet75604540TriplePFBTagDeepCSV3p5+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT350+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp027Triple+process.HLTEndSequence)
 
 
 process.HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p75_v1 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT350PT30QuadPFJet75604540TriplePFBTagDeepCSV3p75+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTBtagDeepCSVSequenceL3+process.hltBTagCaloDeepCSVp05Double+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT350+process.HLTBtagDeepCSVSequencePF+process.hltBTagPFDeepCSVp039Triple+process.HLTEndSequence)
@@ -16210,6 +16302,9 @@ process.HLT_PFHT320PT30_QuadPFJet_75_60_45_40_v7 = cms.Path(process.HLTBeginSequ
 process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_v7 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT330PT30QuadPFJet75604540+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT330+process.HLTEndSequence)
 
 
+process.HLT_PFHT335PT30_QuadPFJet_75_60_45_40_v7 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT335PT30QuadPFJet75604540+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT335+process.HLTEndSequence)
+
+
 process.HLT_PFHT340PT30_QuadPFJet_75_60_45_40_v7 = cms.Path(process.HLTBeginSequence+process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+process.hltPrePFHT340PT30QuadPFJet75604540+process.HLTAK4CaloJetsSequence+process.hltQuadCentralJet30+process.hltCaloJetsQuad30ForHt+process.hltHtMhtCaloJetsQuadC30+process.hltCaloQuadJet30HT300+process.HLTAK4PFJetsSequence+process.hltPFCentralJetLooseIDQuad30+process.hlt1PFCentralJetLooseID75+process.hlt2PFCentralJetLooseID60+process.hlt3PFCentralJetLooseID45+process.hlt4PFCentralJetLooseID40+process.hltPFCentralJetLooseIDQuad30forHt+process.hltHtMhtPFCentralJetsLooseIDQuadC30+process.hltPFCentralJetsLooseIDQuad30HT340+process.HLTEndSequence)
 
 
@@ -16220,12 +16315,13 @@ process.HLTriggerFinalPath = cms.Path(process.hltGtStage2Digis+process.hltScaler
 
 
 process.hltOutputFULL = cms.OutputModule("PoolOutputModule",
-									 dataset = cms.untracked.PSet(),
-									 fileName = cms.untracked.string('./hltOut.root'),
-									 outputCommands = cms.untracked.vstring('drop *',
-																			"keep edmTriggerResults*_*_*_*")
+					 dataset = cms.untracked.PSet(),
+					 fileName = cms.untracked.string('./hltOut.root'),
+					 outputCommands = cms.untracked.vstring('drop *',
+										"keep edmTriggerResults*_*_*_*")
 
 )
 process.FULLOutput = cms.EndPath(process.hltOutputFULL)
+
 
 

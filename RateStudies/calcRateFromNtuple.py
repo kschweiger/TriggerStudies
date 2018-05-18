@@ -3,16 +3,16 @@ import countEvents
 from math import sqrt
 #################################
 # User input
-basepath = "/mnt/t3nfs01/data01/shome/koschwei/scratch/HLT2018Tuning/RateEstimation/RunF270218/AllTestConfigs/"
+basepath = "/mnt/t3nfs01/data01/shome/koschwei/scratch/HLT2018Tuning/RateEstimation/RunF150318/"
 inputfiles = [
     "EphemeralHLTPhysics1/EphemeralHLTPhysics1.root",
     "EphemeralHLTPhysics2/EphemeralHLTPhysics2.root",
     "EphemeralHLTPhysics3/EphemeralHLTPhysics3.root",
-    "EphemeralHLTPhysics4/EphemeralHLTPhysics4.root",
-    "EphemeralHLTPhysics5/EphemeralHLTPhysics5.root",
-    "EphemeralHLTPhysics6/EphemeralHLTPhysics6.root",
+    #"EphemeralHLTPhysics4/EphemeralHLTPhysics4.root",
+    #"EphemeralHLTPhysics5/EphemeralHLTPhysics5.root",
+    #"EphemeralHLTPhysics6/EphemeralHLTPhysics6.root",
     "EphemeralHLTPhysics7/EphemeralHLTPhysics7.root",
-    "EphemeralHLTPhysics8/EphemeralHLTPhysics8.root",
+    #"EphemeralHLTPhysics8/EphemeralHLTPhysics8.root",
 ]
               
 nLS = 248
@@ -35,6 +35,8 @@ addCombinations = [
                 "HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5_v7"]),
     ("SixJets2Tag",["HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
                 "HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2_v6"]),
+     ("Option B",["HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v1",
+                  "HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1"]),
 
     ("QuadJetHT30CSV3p0OrSixJets",["HLT_PFHT300PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v7",
                                    "HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2_v7",
@@ -121,14 +123,14 @@ for ifile, _file in enumerate(inputfiles):
             nPassedsErr[path].append(nPassedErr)
             rates[path].append(rate)
             ratesErr[path].append(rateErr)
-
+    """
     pathpair = []
     for ipath,path in enumerate(PathsinFile):
         for path2 in PathsinFile:
             if path != path2 and (path[-10:] == path2[-10:]) and  (path[0:10] == path2[0:10]):
                 pathpair.append((path, path2))
                 PathsinFile.remove(path)
-
+    """
     for name, path in addCombinations:
         pathsel = "("
         for p in path:
@@ -150,7 +152,7 @@ for ifile, _file in enumerate(inputfiles):
             nPassedsErr[name].append(nPassedErr)
             rates[name].append(rate)
             ratesErr[name].append(rateErr)
-
+    """
     for path1, path2 in pathpair:
         
         nPassed = tree.Draw("", "{0} == 1 || {1} == 1 ".format(path1, path2))
@@ -169,6 +171,7 @@ for ifile, _file in enumerate(inputfiles):
             rates[path1+"-"+path2].append(rate)
             ratesErr[path1+"-"+path2].append(rateErr)
         #print "{0} or {1} {2}".format(path1, path2, rate)
+    """
 print "---------------------------------------------"
 print "---------------------------------------------"
 print "---------------------------------------------"

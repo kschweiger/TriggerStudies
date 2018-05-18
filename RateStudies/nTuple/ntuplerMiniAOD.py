@@ -960,6 +960,11 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         if isMC:
             FillVector(genJets_source,genJets,15)
 
+
+        for i in range(offJets.num[0]):
+            offJets.matchCalo[i] = -1
+            offJets.matchPF[i] = -1
+            
         #Matching calo jets to off jets
         for i in range(caloJets.num[0]):
             caloJets.matchOff[i] = Matching(caloJets.phi[i],caloJets.eta[i],offJets)
@@ -1122,7 +1127,7 @@ if __name__ == "__main__":
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/ttbar_RunIISummer17MiniAOD__92X_upgrade2017_MINIAOD_LS-starting2183.root"]
     #filesInput = ["file:/afs/cern.ch/work/k/koschwei/public/MuonEG_Run299368_PromptReco-v1_Run2017C_AOD_LS-79to90-115to129.root"]
     fileOutput = "tree_phase1.root"
-    maxEvents = 100
-    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents, preProcessing=False)
+    maxEvents = 10
+    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents, preProcessing=True)
 
     

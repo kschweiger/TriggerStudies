@@ -3,17 +3,19 @@ from copy import deepcopy
 #################################
 # User input
 inputfiles = [
-    "GRun/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
-    "OptA2/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
-    "OptB/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
-    "OptB/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
+    "V33/Reference/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
+    "V33/Proposal/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
+#    "OptA2/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
+#    "OptB/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
+#    "OptB/DQM_V0001_R000305636__HLT__FastTimerService__All.root",
     ]
 
 paths = [
     "HLT_PFHT300PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v7",
-    "HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p25_v1",
-    "HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v1",
-    "HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1",
+    "HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v1",
+#    "HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p25_v1",
+#    "HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0_v1",
+#    "HLT_PFHT350PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_3p0_v1",
     ]
 
 run = "305636"
@@ -57,5 +59,5 @@ for ih, h in enumerate(histos):
 
     
 leg.Draw("same")
-c.Print("PathTotal_PathComparison.pdf")
+c.Print("PathTotal_PathComparison_2.pdf")
 
